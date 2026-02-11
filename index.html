@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>دفتر ثبت گزارش درسی</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/png" sizes="32*32" href="./image/images.jpg">
+<!-- JalaliDatePicker CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+<script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+<script src="lib/chart.js"></script>
+<script src="lib/jalaali.js"></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <button class="nav-btn active" data-section="homeSection">خانه</button>
+    <button class="nav-btn" data-section="reportSection">ثبت گزارش</button>
+    <button class="nav-btn" data-section="listSection">لیست دروس</button>
+    <button class="nav-btn" data-section="analyticsSection">تحلیل</button>
+    <button class="nav-btn" data-section="settingsSection">تنظیمات</button>
+</nav>
+
+<!-- Sections -->
+
+<!-- بخش خانه -->
+<div id="homeSection" class="section">
+    <div class="card">
+        <div class="time" id="time">--:--:--</div>
+        <div class="date" id="date">--/--/----</div>
+    </div>
+
+    <div class="card">
+        <div class="days-left" id="daysLeft">-- روز مانده تا کنکور</div>
+        <div class="days-left" id="daysLeftFinal">-- روز مانده تا امتحانات نهایی</div>
+    </div>
+
+    <div class="card">
+        <div class="days-left" id="todaySummary">امروز مطالعه‌ای ثبت نشده</div>
+    </div>
+    <div class="submit-home">
+        <button class="nav-btn" data-section="reportSection" style="width: 50%; background-color: rgb(77, 205, 236);">ثبت گزارش جدید</button>
+    </div>
+</div>
+
+<!-- بخش ثبت گزارش -->
+<div id="reportSection" class="section" style="display:none;">
+    <h2>ثبت گزارش درسی 📝</h2>
+    <form id="reportForm">
+        <label>تاریخ مطالعه:</label>
+        <input type="text" id="studyDate" data-jdp required>
+
+        <label>درس:</label>
+  <select id="subject" required></select>
+
+
+        <label>مبحث:</label>
+        <input type="text" id="topic" required>
+
+        <label>مدت زمان مرور (α دقیقه):</label>
+        <input type="number" id="alpha" min="0" required>
+
+        <label>مدت زمان حل تمرین (β دقیقه):</label>
+        <input type="number" id="beta" min="0" required>
+
+        <label>تعداد تست من (Y):</label>
+        <input type="number" id="yTests" min="0" required>
+
+        <label>تعداد سوال استاد (X):</label>
+        <input type="number" id="xTests" min="0" required>
+
+        <label>مدت زمان استاد (A دقیقه):</label>
+        <input type="number" id="aTime" min="0" required>
+
+        <label>کیفیت مطالعه:</label>
+        <select id="studyQuality" required>
+            <option value="عالی">عالی</option>
+            <option value="متوسط">متوسط</option>
+            <option value="بد">بد</option>
+        </select>
+
+        <label>توضیحات:</label>
+        <textarea id="notes" rows="3"></textarea>
+
+        <button type="submit">ثبت گزارش</button>
+    </form>
+</div>
+
+<!-- بخش لیست دروس -->
+<div id="listSection" class="section" style="display:none;">
+    <h2>لیست دروس 📋</h2>
+
+<!-- فیلتر -->
+<div class="filter">
+    <label>فیلتر بر اساس درس:</label>
+    <input type="text" id="filterSubject" placeholder="نام درس">
+
+    <label>فیلتر بر اساس بازه تاریخ:</label>
+    <input type="text" id="filterStartDate" placeholder="از تاریخ YYYY/MM/DD" data-jdp>
+    <input type="text" id="filterEndDate" placeholder="تا تاریخ YYYY/MM/DD" data-jdp>
+</div>
+<!-- جدول دروس -->
+<table id="subjectsTable">
+    <thead>
+        <tr>
+            <th>تاریخ</th>
+            <th>درس</th>
+            <th>مبحث</th>
+            <th>مدت مرور (α)</th>
+            <th>مدت حل تمرین (β)</th>
+            <th>مدت استاد (A)</th>
+            <th>تست من (Y)</th>
+            <th>تست استاد (X)</th>
+            <th>کیفیت</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ردیف‌ها با JS اضافه میشن -->
+    </tbody>
+</table>
+
+
+</div>
+
+<div id="analyticsSection" class="section" style="display:none;">
+    <h2>تحلیل 📊</h2>
+
+<!-- نمودار زمان مطالعه -->
+<div class="chart-card">
+    <h3>زمان مطالعه</h3>
+    <div class="chart-filters">
+        <label>درس:</label>
+        <input type="text" id="timeChartSubjectFilter" placeholder="نام درس">
+        <label>تاریخ:</label>
+        <input type="text" id="timeChartStartDate" placeholder="از تاریخ" data-jdp>
+        <input type="text" id="timeChartEndDate" placeholder="تا تاریخ" data-jdp>
+    </div>
+    <canvas id="timeChart"></canvas>
+</div>
+
+<!-- نمودار تعداد تست -->
+<div class="chart-card">
+    <h3>تعداد تست</h3>
+    <div class="chart-filters">
+        <label>درس:</label>
+        <input type="text" id="testChartSubjectFilter" placeholder="نام درس">
+        <label>تاریخ:</label>
+        <input type="text" id="testChartStartDate" placeholder="از تاریخ" data-jdp>
+        <input type="text" id="testChartEndDate" placeholder="تا تاریخ" data-jdp>
+    </div>
+    <canvas id="testChart"></canvas>
+</div>
+
+<!-- نمودار سفارشی -->
+<div class="chart-card">
+    <h3>نمودار سفارشی</h3>
+    <div class="chart-filters">
+        <label>درس:</label>
+        <input type="text" id="customChartSubjectFilter" placeholder="نام درس">
+        <label>تاریخ:</label>
+        <input type="text" id="customChartStartDate" placeholder="از تاریخ" data-jdp>
+        <input type="text" id="customChartEndDate" placeholder="تا تاریخ" data-jdp>
+        <label>نوع نمودار:</label>
+        <select id="customChartTypeSelect">
+            <option value="Y">تعداد تست خودم (Y)</option>
+            <option value="X">تعداد تست استاد (X)</option>
+            <option value="time">زمان من (α+β)</option>
+            <option value="A">زمان استاد (A)</option>
+        </select>
+    </div>
+    <canvas id="customChart"></canvas>
+</div>
+
+<div class="formula-box">
+    <h3>چک فرمول‌های هفتگی ✅</h3>
+
+   <div class="formula-item">
+    <div class="formula-row">
+        <div class="formula-title">مجموع زمان مطالعه (A + B) ≥ 72 ساعت</div>
+        <div id="textABTop" class="formula-value"></div>
+    </div>
+
+    <div class="progress">
+        <div id="barAB" class="progress-bar"></div>
+    </div>
+
+    <div id="textABBottom" class="formula-subtext"></div>
+</div>
+
+
+
+
+    <div class="formula-item">
+        <div>زمان استاد ≤ زمان من (A ≤ B)</div>
+        <span id="checkA_B"></span>
+    </div>
+
+    <div class="formula-item">
+        <div>حل تمرین ≥ مرور (β ≥ α)</div>
+        <span id="checkBetaAlpha"></span>
+    </div>
+
+   <div class="formula-item">
+    <div class="formula-row">
+        <div class="formula-title">تعداد تست (X + Y) ≥ 800</div>
+        <div id="textTestsTop" class="formula-value"></div>
+    </div>
+
+    <div class="progress">
+        <div id="barTests" class="progress-bar"></div>
+    </div>
+
+    <div id="textTestsBottom" class="formula-subtext"></div>
+</div>
+
+
+</div>
+</div>
+
+<div id="settingsSection" class="section" style="display:none;">
+    <h2>تنظیمات ⚙️</h2>
+
+    <div class="settings-card">
+        <h3>تاریخ‌های مهم</h3>
+        <input type="text" id="examDateInput" data-jdp placeholder="تاریخ کنکور">
+        <input type="text" id="finalDateInput" data-jdp placeholder="تاریخ امتحانات نهایی">
+        <button onclick="saveImportantDates()">ذخیره</button>
+    </div>
+
+    <div class="settings-card">
+        <h3>مدیریت درس‌ها</h3>
+        <input type="text" id="newSubject" placeholder="نام درس جدید">
+        <button onclick="addSubject()">افزودن</button>
+        <ul id="subjectsList"></ul>
+    </div>
+
+    <div class="settings-card">
+        <h3>حد فرمول‌ها</h3>
+        <input type="number" id="hourLimit" placeholder="حد ساعت (پیشفرض 72)">
+        <input type="number" id="testLimit" placeholder="حد تست (پیشفرض 800)">
+        <button onclick="saveLimits()">ذخیره</button>
+    </div>
+
+    <div class="settings-card">
+        <h3>نمایش</h3>
+        <button onclick="toggleDarkMode()" style="margin-bottom: 10px;">حالت شب / روز</button>
+        <select id="timeUnitSelect" onchange="saveTimeUnit()">
+            <option value="minute">نمایش دقیقه</option>
+            <option value="hour">نمایش ساعت</option>
+        </select>
+    </div>
+
+    <div class="settings-card">
+        <h3>بکاپ⤵️</h3>
+        <button onclick="backupData()" style="margin-bottom: 10px;">دانلود بکاپ</button>
+        <h3>ریستور🔄️</h3>
+        <input type="file" id="restoreFile" onchange="restoreData()">
+    </div>
+
+    <div class="settings-card danger">
+        <button onclick="resetAllData()">❕ریست کامل سیستم❕</button>
+    </div>
+</div>
+
+
+<script src="js/app.js"></script>
+</body>
+</html>
