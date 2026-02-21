@@ -17,8 +17,8 @@ navButtons.forEach(btn => {
 // ===================
 // ساعت و تاریخ و روزشمار
 // ===================
-const examDate = new Date('2026-06-01'); 
-const finalExamDate = new Date('2026-05-15');
+const examDate = new Date('2026-07-02'); 
+const finalExamDate = new Date('2026-05-21');
 
 function updateClock() {
     const now = new Date();
@@ -654,3 +654,4 @@ window.addEventListener('load', ()=>{
     if(localStorage.getItem('darkMode')==="true")
         document.body.classList.add('dark-mode');
 });
+
